@@ -24,6 +24,7 @@ namespace LeeSin_EloClimber
         internal static float lastWard;
         internal static int idWard;
         internal static float lastQ;
+        internal static float qCast;
 
         internal static void Load()
         {
@@ -82,6 +83,8 @@ namespace LeeSin_EloClimber
                 if(Args.Slot == Q.Slot)
                     lastQ = Environment.TickCount;
             }
+            if (sender.IsMe && Args.Slot == Q.Slot)
+                qCast = Environment.TickCount;
         }
 
         private static void OnBuffAdd(Obj_AI_Base sender, Obj_AI_BaseBuffAddEventArgs Args)

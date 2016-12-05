@@ -49,7 +49,7 @@ namespace LeeSin_EloClimber
 
         private static void Update(EventArgs args)
         {
-            Target = TargetSelector.GetTarget(LeeSin.Q.Range + LeeSin.W.Range, TargetSelector.DamageType.Physical);
+            Target = TargetSelector.GetTarget(LeeSin.Q.Range + 300, TargetSelector.DamageType.Physical);
 
             if (LeeSin.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
@@ -84,6 +84,9 @@ namespace LeeSin_EloClimber
         {
             if(target.CountEnemiesInRange(2000) == 1 || !LeeSin.R.IsReady() || !MenuManager.myMenu.Item("combo.rLogic").GetValue<Boolean>())
             {
+                if (Environment.TickCount - LeeSin.qCast < 1000)
+                    return;
+
                 var allyMinion = MinionManager.GetMinions(LeeSin.W.Range, MinionTypes.All, MinionTeam.Ally, MinionOrderTypes.None);
 
                 if (target.Position.Distance(LeeSin.myHero.Position) > 600)

@@ -56,7 +56,7 @@ namespace LeeSin_EloClimber
                 Vector3[] path = target.Path;
                 if (path.Count() == 1)
                 {
-                    if (path[0].Distance(LeeSin.myHero.Position) < isSpell.Range)
+                    if (path[0].Distance(LeeSin.myHero.ServerPosition) < isSpell.Range)
                         result.Hitchance = 8;
 
                     result.predPos = path[0];
@@ -65,15 +65,13 @@ namespace LeeSin_EloClimber
                 {
                     if (GetNow() - newPath[target.NetworkId] < 100 || GetNow() > 3000)
                     {
-                        float timeToHit = (LeeSin.myHero.Position.Distance(target.Position) / isSpell.Speed) + (isSpell.Delay / 1000);
+                        float timeToHit = (LeeSin.myHero.ServerPosition.Distance(target.ServerPosition) / isSpell.Speed) + (isSpell.Delay / 1000);
                         float DistanceRun = target.MoveSpeed * timeToHit;
 
                         Vector3 pos = path[1];
-                        pos = target.Position.Extend(path[1], (DistanceRun - (isSpell.Width / 2)));
-                        if (target.Position.Distance(path[1]) < target.Position.Distance(pos))
-                            pos = path[1];
+                        pos = target.ServerPosition.Extend(path[1], (DistanceRun - (isSpell.Width / 2) - target.BoundingRadius));
 
-                        if (pos.Distance(LeeSin.myHero.Position) < isSpell.Range)
+                        if (pos.Distance(LeeSin.myHero.ServerPosition) < isSpell.Range)
                         {
                             if (DistanceRun > 500)
                                 result.Hitchance = 3;
@@ -83,6 +81,8 @@ namespace LeeSin_EloClimber
                                 result.Hitchance = 5;
                             else if (DistanceRun > 200)
                                 result.Hitchance = 6;
+                            else if (DistanceRun < 200)
+                                result.Hitchance = 7;
 
                             result.predPos = pos;
                         }
@@ -90,7 +90,7 @@ namespace LeeSin_EloClimber
 
                 }
 
-                PredictionInput predInput = new PredictionInput { From = LeeSin.myHero.Position, Radius = isSpell.Width, Range = isSpell.Range };
+                PredictionInput predInput = new PredictionInput { From = LeeSin.myHero.ServerPosition, Radius = isSpell.Width, Range = isSpell.Range };
                 predInput.CollisionObjects[0] = CollisionableObjects.Heroes;
                 predInput.CollisionObjects[1] = CollisionableObjects.Minions;
 
