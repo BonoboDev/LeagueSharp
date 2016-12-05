@@ -164,7 +164,7 @@ namespace LeeSin_EloClimber
         {
          
             Spell wardSpell = FindWard();
-            if (Environment.TickCount - lastWard < 200 || !W.IsReady() || IsSecondCast(W) || wardSpell == null)
+            if (Environment.TickCount - lastWard < 500 || !W.IsReady() || IsSecondCast(W) || wardSpell == null)
                 return;
 
             wardSpell.Cast(endPos);

@@ -149,7 +149,7 @@ namespace LeeSin_EloClimber
                 if (unit.NetworkId != target.NetworkId && unit.IsValidTarget())
                 {
                     var pred = Prediction.GetPrediction(unit, 500);
-                    if (target.Position.Distance(pred.UnitPosition) < 1100)
+                    if (target.Position.Distance(pred.UnitPosition) < 900)
                     {
                         Vector3 startPos = target.Position;
                         Vector3 endPos = pred.UnitPosition;
