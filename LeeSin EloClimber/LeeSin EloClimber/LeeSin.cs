@@ -48,7 +48,8 @@ namespace LeeSin_EloClimber
             LaneClear.Load();
             WardJump.Load();
             Insec.Load();
-            Combo.Load();      
+            Combo.Load();
+            myPred.load();    
 
             // Callback
             Obj_AI_Base.OnBuffAdd += OnBuffAdd;

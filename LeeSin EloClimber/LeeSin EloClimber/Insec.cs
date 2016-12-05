@@ -140,7 +140,7 @@ namespace LeeSin_EloClimber
             if (endPos == default(Vector3))
                 return;
 
-            Vector3 WardPos = insecTarget.Position + (insecTarget.Position - endPos).Normalized() * 250;
+            Vector3 WardPos = insecTarget.Position + (insecTarget.Position - endPos).Normalized() * 300;
 
             if (LeeSin.myHero.Distance(WardPos) < 100)
             {

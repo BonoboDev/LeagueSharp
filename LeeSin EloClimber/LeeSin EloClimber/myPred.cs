@@ -30,14 +30,28 @@ namespace LeeSin_EloClimber
 
     internal class myPred
     {
+        private static Dictionary<int, float> newPath = new Dictionary<int, float>();
+
+        internal static void load()
+        {
+            Obj_AI_Base.OnNewPath += OnNewPath;
+            foreach (var unit in HeroManager.Enemies)
+            {
+                newPath.Add(unit.NetworkId, Environment.TickCount);
+            }
+        }
+
+        private static int GetNow()
+        {
+            return ((DateTime.Now.Minute * 60) * 1000) + (DateTime.Now.Second * 1000) + DateTime.Now.Millisecond;
+        }
+
         internal static resultPred GetPrediction(Obj_AI_Hero target, Spell isSpell)
         {
             resultPred result = new resultPred(new Vector3(), 0);
 
             if (target != null & target.IsValidTarget(LeeSin.Q.Range + LeeSin.W.Range))
             {
-                float timeToHit = (LeeSin.myHero.Position.Distance(target.Position) / isSpell.Speed) + (isSpell.Delay / 1000) + ((Game.Ping/1000)/2);
-                float DistanceRun = target.MoveSpeed * timeToHit;
 
                 Vector3[] path = target.Path;
                 if (path.Count() == 1)
@@ -47,25 +61,31 @@ namespace LeeSin_EloClimber
 
                     result.predPos = path[0];
                 }
-                else if (path.Count() == 2)
+                else if (path.Count() >= 2)
                 {
-                    Vector3 pos = path[1];
-                    pos = target.Position + (pos - target.Position).Normalized() * (DistanceRun-(target.BoundingRadius/2)-(isSpell.Width/2));
-                    if (target.Position.Distance(path[1]) < target.Position.Distance(pos))
-                        pos = path[1];
-
-                    if (pos.Distance(LeeSin.myHero.Position) < isSpell.Range)
+                    if (GetNow() - newPath[target.NetworkId] < 100 || GetNow() > 3000)
                     {
-                        if (DistanceRun > 500)
-                            result.Hitchance = 3;
-                        else if (DistanceRun > 400)
-                            result.Hitchance = 4;
-                        else if (DistanceRun > 300)
-                            result.Hitchance = 5;
-                        else if (DistanceRun > 200)
-                            result.Hitchance = 6;
+                        float timeToHit = (LeeSin.myHero.Position.Distance(target.Position) / isSpell.Speed) + (isSpell.Delay / 1000) + ((Game.Ping / 1000) / 2);
+                        float DistanceRun = target.MoveSpeed * timeToHit;
 
-                        result.predPos = pos;
+                        Vector3 pos = path[1];
+                        pos = target.Position + (pos - target.Position).Normalized() * (DistanceRun - (target.BoundingRadius / 2) - (isSpell.Width / 2));
+                        if (target.Position.Distance(path[1]) < target.Position.Distance(pos))
+                            pos = path[1];
+
+                        if (pos.Distance(LeeSin.myHero.Position) < isSpell.Range)
+                        {
+                            if (DistanceRun > 500)
+                                result.Hitchance = 3;
+                            else if (DistanceRun > 400)
+                                result.Hitchance = 4;
+                            else if (DistanceRun > 300)
+                                result.Hitchance = 5;
+                            else if (DistanceRun > 200)
+                                result.Hitchance = 6;
+
+                            result.predPos = pos;
+                        }
                     }
 
                 }
@@ -81,6 +101,15 @@ namespace LeeSin_EloClimber
                     result.Hitchance = 0;
             }
             return result;
+        }
+
+        private static void OnNewPath(Obj_AI_Base sender, GameObjectNewPathEventArgs Args)
+        {
+            if (sender.IsEnemy && sender.IsChampion())
+            {
+                newPath.Remove(sender.NetworkId);
+                newPath.Add(sender.NetworkId, GetNow());
+            }
         }
     }
 }
