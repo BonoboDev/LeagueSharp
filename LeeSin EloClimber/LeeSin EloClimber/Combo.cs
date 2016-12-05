@@ -29,7 +29,7 @@ namespace LeeSin_EloClimber
     }
 
     internal class Combo
-    {
+    {      
         private static Obj_AI_Hero Target;
         private static float jumpToPos = Environment.TickCount;
 
@@ -117,26 +117,26 @@ namespace LeeSin_EloClimber
             }
         }
 
-        private static void CastQ(Obj_AI_Hero target)
+        private static void CastQ(Obj_AI_Hero unit)
         {
             if (LeeSin.Q.IsReady() && !LeeSin.IsSecondCast(LeeSin.Q))
             {
                 if (MenuManager.myMenu.Item("pred.list2").GetValue<StringList>().SelectedIndex == 0)
                 {
-                    PredictionOutput qPred = LeeSin.Q.GetPrediction(target);
+                    PredictionOutput qPred = LeeSin.Q.GetPrediction(unit);
                     if ((int)qPred.Hitchance >= MenuManager.myMenu.Item("combo.qHitChance").GetValue<Slider>().Value)
                         LeeSin.Q.Cast(qPred.CastPosition);
                 }
-                else
+                else if(MenuManager.myMenu.Item("pred.list2").GetValue<StringList>().SelectedIndex == 1)
                 {
-                    resultPred qPred = myPred.GetPrediction(Target, LeeSin.Q);
+                    resultPred qPred = myPred.GetPrediction(unit, LeeSin.Q);
                     if (qPred.Hitchance >= MenuManager.myMenu.Item("combo.qHitChance").GetValue<Slider>().Value)
                         LeeSin.Q.Cast(qPred.predPos);
-                }
+                }              
             }
-            else if (LeeSin.Q.IsReady() && LeeSin.IsSecondCast(LeeSin.Q) && target.HasBuff("BlindMonkQOne"))
+            else if (LeeSin.Q.IsReady() && LeeSin.IsSecondCast(LeeSin.Q) && unit.HasBuff("BlindMonkQOne"))
             {
-                if (LeeSin.myHero.Position.Distance(target.Position) > 700 || Environment.TickCount - LeeSin.lastQ > 2800 || LeeSin.GetDamage_Q2(target,0) > target.Health)
+                if (LeeSin.myHero.Position.Distance(unit.Position) > 700 || Environment.TickCount - LeeSin.lastQ > 2800 || LeeSin.GetDamage_Q2(unit, 0) > unit.Health)
                 LeeSin.Q.Cast();
             }
         }
@@ -204,20 +204,20 @@ namespace LeeSin_EloClimber
             foreach (var unit in HeroManager.Enemies)
             {
                 if (unit.NetworkId != target.NetworkId && unit.IsValidTarget())
-                {
-                    var pred = Prediction.GetPrediction(unit, 300);
+                {                    
+                    var pred = LeagueSharp.Common.Prediction.GetPrediction(unit, 300);
                     if (target.Position.Distance(pred.UnitPosition) < 900)
                     {
                         Vector3 startPos = target.Position;
                         Vector3 endPos = pred.UnitPosition;
                         endPos = startPos + (endPos - startPos).Normalized() * 900;
-                        var zone = new Geometry.Polygon.Rectangle(startPos, endPos, target.BoundingRadius - 5);
+                        var zone = new LeagueSharp.Common.Geometry.Polygon.Rectangle(startPos, endPos, target.BoundingRadius - 5);
 
                         foreach (var unit2 in HeroManager.Enemies)
                         {
                             if (unit2.NetworkId != target.NetworkId && unit2.NetworkId != unit.NetworkId && unit2.IsValidTarget())
                             {
-                                pred = Prediction.GetPrediction(unit2, 300);
+                                pred = LeagueSharp.Common.Prediction.GetPrediction(unit2, 300);
                                 if (zone.IsInside(pred.UnitPosition))
                                 {
                                     unitHit++;

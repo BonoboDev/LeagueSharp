@@ -65,11 +65,11 @@ namespace LeeSin_EloClimber
                 {
                     if (GetNow() - newPath[target.NetworkId] < 100 || GetNow() > 3000)
                     {
-                        float timeToHit = (LeeSin.myHero.Position.Distance(target.Position) / isSpell.Speed) + (isSpell.Delay / 1000) + ((Game.Ping / 1000) / 2);
+                        float timeToHit = (LeeSin.myHero.Position.Distance(target.Position) / isSpell.Speed) + (isSpell.Delay / 1000);
                         float DistanceRun = target.MoveSpeed * timeToHit;
 
                         Vector3 pos = path[1];
-                        pos = target.Position + (pos - target.Position).Normalized() * (DistanceRun - (target.BoundingRadius / 2) - (isSpell.Width / 2));
+                        pos = target.Position.Extend(path[1], (DistanceRun - (isSpell.Width / 2)));
                         if (target.Position.Distance(path[1]) < target.Position.Distance(pos))
                             pos = path[1];
 

@@ -49,7 +49,7 @@ namespace LeeSin_EloClimber
             WardJump.Load();
             Insec.Load();
             Combo.Load();
-            myPred.load();    
+            myPred.load();
 
             // Callback
             Obj_AI_Base.OnBuffAdd += OnBuffAdd;
