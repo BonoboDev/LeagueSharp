@@ -62,11 +62,58 @@ namespace LeeSin_EloClimber
             if (unit != null & unit.IsValidTarget(LeeSin.Q.Range + LeeSin.W.Range))
             {
                 if (MenuManager.myMenu.Item("combo.useQ").GetValue<Boolean>())
+                {
                     CastQ(unit);
-                if (MenuManager.myMenu.Item("combo.useE").GetValue<Boolean>())
+                }
+                if (MenuManager.myMenu.Item("combo.useW").GetValue<Boolean>() && LeeSin.myHero.Mana > 100)
+                {
+                    CastW(unit);
+                }
+                if (MenuManager.myMenu.Item("combo.useE").GetValue<Boolean>() && LeeSin.myHero.Mana > 100)
+                {
                     CastE(unit);
+                }
                 if (MenuManager.myMenu.Item("combo.useR").GetValue<Boolean>())
+                {
                     CastR(unit);
+                }
+            }
+        }
+
+        private static void CastW(Obj_AI_Hero target)
+        {
+            if(target.CountEnemiesInRange(2000) == 1 || !LeeSin.R.IsReady() || !MenuManager.myMenu.Item("combo.rLogic").GetValue<Boolean>())
+            {
+                var allyMinion = MinionManager.GetMinions(LeeSin.W.Range, MinionTypes.All, MinionTeam.Ally, MinionOrderTypes.None);
+
+                if (target.Position.Distance(LeeSin.myHero.Position) > 600)
+                {
+                    var ally = HeroManager.Allies.Where(unit => (unit.Position.Distance(target.Position) < LeeSin.Q.Range && (unit.NetworkId != LeeSin.myHero.NetworkId)));
+                    if (ally.Count() > 0)
+                    {
+                        LeeSin.W.Cast(ally.First());
+                        return;
+                    }
+
+                    var minion = allyMinion.Where(unit => (unit.Distance(target.Position) < LeeSin.Q.Range));
+                    if (minion.Count() > 0)
+                    {
+                        LeeSin.W.Cast(minion.First());
+                        return;
+                    }
+
+                    if (MenuManager.myMenu.Item("combo.ward").GetValue<Boolean>() && LeeSin.myHero.Position.Distance(target.Position) > LeeSin.Q.Range )
+                    {
+                        Vector3 wardPos = LeeSin.myHero.Position + (target.Position - LeeSin.myHero.Position).Normalized() * 600;
+                        LeeSin.WardJump_Position(wardPos);
+                        return;
+                    }
+                }             
+                else if (target.Position.Distance(LeeSin.myHero.Position) < 400)
+                {
+                    LeeSin.W.Cast(LeeSin.myHero);
+                    return;
+                }
             }
         }
 
@@ -110,26 +157,27 @@ namespace LeeSin_EloClimber
                         }
                         else if (LeeSin.W.IsReady() && !LeeSin.IsSecondCast(LeeSin.W) && wardSpell != null)
                         {
-                            LeeSin.WardJump_Position(value.pos);
                             jumpToPos = Environment.TickCount;
+                            LeeSin.WardJump_Position(value.pos);
                         }
                     }
                 }
                 // Kill
                 if (LeeSin.myHero.Position.Distance(target.Position) < LeeSin.R.Range)
                 {
-                    if (target.Health < LeeSin.GetDamage_R(target))
+                    var r_dmg = LeeSin.GetDamage_R(target);
+                    if (target.Health < r_dmg)
                         LeeSin.R.Cast(target);
 
                     if (LeeSin.Q.IsReady() && !LeeSin.IsSecondCast(LeeSin.Q))
                     {
-                        if(LeeSin.GetDamage_Q(target, LeeSin.GetDamage_R(target)) > target.Health)
+                        if (LeeSin.GetDamage_Q(target, r_dmg) + r_dmg > target.Health)
                             LeeSin.R.Cast(target);
                     }
 
                     if (LeeSin.Q.IsReady() && LeeSin.IsSecondCast(LeeSin.Q) && target.HasBuff("BlindMonkQOne"))
                     {
-                        if (LeeSin.GetDamage_Q2(target, LeeSin.GetDamage_R(target)) > target.Health)
+                        if (LeeSin.GetDamage_Q2(target, r_dmg) + r_dmg > target.Health)
                             LeeSin.R.Cast(target);
                     }
                 }   
@@ -148,7 +196,7 @@ namespace LeeSin_EloClimber
             {
                 if (unit.NetworkId != target.NetworkId && unit.IsValidTarget())
                 {
-                    var pred = Prediction.GetPrediction(unit, 500);
+                    var pred = Prediction.GetPrediction(unit, 300);
                     if (target.Position.Distance(pred.UnitPosition) < 900)
                     {
                         Vector3 startPos = target.Position;
@@ -160,7 +208,7 @@ namespace LeeSin_EloClimber
                         {
                             if (unit2.NetworkId != target.NetworkId && unit2.NetworkId != unit.NetworkId && unit2.IsValidTarget())
                             {
-                                pred = Prediction.GetPrediction(unit2, 500);
+                                pred = Prediction.GetPrediction(unit2, 300);
                                 if (zone.IsInside(pred.UnitPosition))
                                 {
                                     unitHit++;

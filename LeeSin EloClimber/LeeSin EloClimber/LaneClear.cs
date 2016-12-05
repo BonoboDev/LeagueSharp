@@ -40,7 +40,7 @@ namespace LeeSin_EloClimber
 
                 if (MenuManager.myMenu.Item("lane.useE").GetValue<Boolean>() && LeeSin.E.IsReady() && LeeSin.IsSecondCast(LeeSin.E)) // Second E
                 {
-                    if (LeeSin.PassiveStack < 2)
+                    if (LeeSin.PassiveStack < 1)
                     {
                         LeeSin.E.Cast();
                         return;
@@ -48,7 +48,7 @@ namespace LeeSin_EloClimber
                 }
                 if (MenuManager.myMenu.Item("lane.useW").GetValue<Boolean>() && LeeSin.W.IsReady() && LeeSin.IsSecondCast(LeeSin.W)) // Second W
                 {
-                    if (LeeSin.PassiveStack < 2)
+                    if (LeeSin.PassiveStack < 1)
                     {
                         LeeSin.W.Cast();
                         return;
@@ -56,7 +56,7 @@ namespace LeeSin_EloClimber
                 }
                 if (MenuManager.myMenu.Item("lane.useQ").GetValue<Boolean>() && LeeSin.Q.IsReady() && LeeSin.IsSecondCast(LeeSin.Q)) // Second Q
                 {
-                    if (LeeSin.PassiveStack < 2 || Q2_dmg > target.Health || LeeSin.myHero.Distance(target) > 500)
+                    if (LeeSin.PassiveStack < 1 || Q2_dmg > target.Health || LeeSin.myHero.Distance(target) > 500)
                     {
                         LeeSin.Q.Cast();
                         return;
@@ -65,7 +65,7 @@ namespace LeeSin_EloClimber
                 }
                 if (MenuManager.myMenu.Item("lane.useE").GetValue<Boolean>() && LeeSin.E.IsReady() && !LeeSin.IsSecondCast(LeeSin.E) && LeeSin.myHero.Distance(target) < LeeSin.E.Range) // First E
                 {
-                    if (LeeSin.PassiveStack == 0 || LeeSin.E.CountHits(enemyMinion, LeeSin.myHero.Position) > MenuManager.myMenu.Item("lane.countE").GetValue<Slider>().Value)
+                    if (LeeSin.PassiveStack < 1 || LeeSin.E.CountHits(enemyMinion, LeeSin.myHero.Position) > MenuManager.myMenu.Item("lane.countE").GetValue<Slider>().Value)
                     {
                         LeeSin.E.Cast();
                         return;
@@ -73,7 +73,7 @@ namespace LeeSin_EloClimber
                 }
                 if (MenuManager.myMenu.Item("lane.useW").GetValue<Boolean>() && LeeSin.W.IsReady() && !LeeSin.IsSecondCast(LeeSin.W) && LeeSin.myHero.Distance(target) < LeeSin.E.Range) // First W
                 {
-                    if (LeeSin.PassiveStack < 2)
+                    if (LeeSin.PassiveStack < 1)
                     {
                         LeeSin.W.Cast();
                         return;
@@ -81,7 +81,7 @@ namespace LeeSin_EloClimber
                 }
                 if (MenuManager.myMenu.Item("lane.useQ").GetValue<Boolean>() && LeeSin.Q.IsReady() && !LeeSin.IsSecondCast(LeeSin.Q)) // First Q
                 {
-                    if (LeeSin.PassiveStack < 2 || (Q1_dmg + Q2_dmg) > target.Health)
+                    if (LeeSin.PassiveStack < 1 || (Q1_dmg + Q2_dmg) > target.Health)
                     {
                         LeeSin.Q.Cast(target.Position);
                         return;

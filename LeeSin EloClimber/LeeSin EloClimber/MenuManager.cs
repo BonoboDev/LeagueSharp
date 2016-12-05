@@ -20,12 +20,14 @@ namespace LeeSin_EloClimber
                 myMenu.SubMenu("Combo").AddItem(new MenuItem("combo.useQ", "Use (Q)").SetValue(true));
                 myMenu.SubMenu("Combo").AddItem(new MenuItem("combo.qHitChance", "(Q) Hit Chance").SetValue(new Slider(3, 3, 6)));
                 myMenu.SubMenu("Combo").AddItem(new MenuItem("combo.useW", "Use (W)").SetValue(true));
+                myMenu.SubMenu("Combo").AddItem(new MenuItem("combo.ward", "Use Ward Jump").SetValue(true));
                 myMenu.SubMenu("Combo").AddItem(new MenuItem("combo.useE", "Use (E)").SetValue(true));
                 myMenu.SubMenu("Combo").AddItem(new MenuItem("combo.useR", "Use (R)").SetValue(true));
                 myMenu.SubMenu("Combo").AddItem(new MenuItem("combo.rLogic", "Use (W)(R) Bump maximum unit").SetValue(true));
 
             myMenu.AddSubMenu(new Menu("Insec Settings", "Insec"));
                 myMenu.SubMenu("Insec").AddItem(new MenuItem("insec.key", "Insec Key").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press, false)));
+                myMenu.SubMenu("Combo").AddItem(new MenuItem("insec.qHitChance", "(Q) Hit Chance").SetValue(new Slider(3, 3, 6)));
 
             myMenu.AddSubMenu(new Menu("Ward Jump Settings", "WardJump"));
                 myMenu.SubMenu("WardJump").AddItem(new MenuItem("wardjump.key", "Ward Jump Key").SetValue(new KeyBind("S".ToCharArray()[0], KeyBindType.Press, false)));

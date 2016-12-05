@@ -153,7 +153,7 @@ namespace LeeSin_EloClimber
             if (LeeSin.Q.IsReady() && !LeeSin.IsSecondCast(LeeSin.Q) && LeeSin.W.IsReady() && !LeeSin.IsSecondCast(LeeSin.W) && wardSpell != null)
             {
                 PredictionOutput qPred = LeeSin.Q.GetPrediction(insecTarget);
-                if ((int)qPred.Hitchance >= MenuManager.myMenu.Item("combo.qHitChance").GetValue<Slider>().Value)
+                if ((int)qPred.Hitchance >= MenuManager.myMenu.Item("insec.qHitChance").GetValue<Slider>().Value)
                 {
                     LeeSin.Q.Cast(qPred.CastPosition);
                     return;
@@ -165,7 +165,7 @@ namespace LeeSin_EloClimber
                     if(isMinion.Count() > 0)
                     {
                         qPred = LeeSin.Q.GetPrediction(isMinion.First());
-                        if ((int)qPred.Hitchance >= MenuManager.myMenu.Item("combo.qHitChance").GetValue<Slider>().Value)
+                        if ((int)qPred.Hitchance >= MenuManager.myMenu.Item("insec.qHitChance").GetValue<Slider>().Value)
                         {
                             LeeSin.Q.Cast(qPred.CastPosition);
                             return;
@@ -175,7 +175,7 @@ namespace LeeSin_EloClimber
                     if (secondUnit.Count() > 0)
                     {
                         qPred = LeeSin.Q.GetPrediction(secondUnit.First());
-                        if ((int)qPred.Hitchance >= MenuManager.myMenu.Item("combo.qHitChance").GetValue<Slider>().Value)
+                        if ((int)qPred.Hitchance >= MenuManager.myMenu.Item("insec.qHitChance").GetValue<Slider>().Value)
                         {
                             LeeSin.Q.Cast(qPred.CastPosition);
                             return;
