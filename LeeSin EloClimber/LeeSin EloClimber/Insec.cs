@@ -126,7 +126,7 @@ namespace LeeSin_EloClimber
         {
             LeeSin.myHero.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
 
-            if (insecTarget != null && insecTarget.IsValidTarget(50000) && LeeSin.R.IsReady())
+            if (insecTarget == null || !insecTarget.IsValidTarget() || !LeeSin.R.IsReady())
                 return;
 
             Vector3 endPos = new Vector3();
@@ -140,10 +140,9 @@ namespace LeeSin_EloClimber
             if (endPos == default(Vector3))
                 return;
 
-
             Vector3 WardPos = insecTarget.Position + (insecTarget.Position - endPos).Normalized() * 250;
 
-            if (LeeSin.myHero.Distance(WardPos) < 100 || (!LeeSin.W.IsReady() || LeeSin.IsSecondCast(LeeSin.W)))
+            if (LeeSin.myHero.Distance(WardPos) < 100)
             {
                 LeeSin.R.Cast(insecTarget);
                 return;
@@ -154,7 +153,7 @@ namespace LeeSin_EloClimber
             if (LeeSin.Q.IsReady() && !LeeSin.IsSecondCast(LeeSin.Q) && LeeSin.W.IsReady() && !LeeSin.IsSecondCast(LeeSin.W) && wardSpell != null)
             {
                 PredictionOutput qPred = LeeSin.Q.GetPrediction(insecTarget);
-                if (qPred.Hitchance >= HitChance.Medium)
+                if ((int)qPred.Hitchance >= MenuManager.myMenu.Item("combo.qHitChance").GetValue<Slider>().Value)
                 {
                     LeeSin.Q.Cast(qPred.CastPosition);
                     return;
@@ -166,7 +165,7 @@ namespace LeeSin_EloClimber
                     if(isMinion.Count() > 0)
                     {
                         qPred = LeeSin.Q.GetPrediction(isMinion.First());
-                        if (qPred.Hitchance >= HitChance.Medium)
+                        if ((int)qPred.Hitchance >= MenuManager.myMenu.Item("combo.qHitChance").GetValue<Slider>().Value)
                         {
                             LeeSin.Q.Cast(qPred.CastPosition);
                             return;
@@ -176,7 +175,7 @@ namespace LeeSin_EloClimber
                     if (secondUnit.Count() > 0)
                     {
                         qPred = LeeSin.Q.GetPrediction(secondUnit.First());
-                        if (qPred.Hitchance >= HitChance.Medium)
+                        if ((int)qPred.Hitchance >= MenuManager.myMenu.Item("combo.qHitChance").GetValue<Slider>().Value)
                         {
                             LeeSin.Q.Cast(qPred.CastPosition);
                             return;

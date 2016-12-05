@@ -145,37 +145,42 @@ namespace LeeSin_EloClimber
             int maxHit = 1;
 
             foreach (var unit in HeroManager.Enemies)
-            {              
-                if (unit.NetworkId != target.NetworkId && target.Position.Distance(unit.Position) < 1100 && unit.IsValidTarget())
+            {
+                if (unit.NetworkId != target.NetworkId && unit.IsValidTarget())
                 {
-                    Vector3 startPos = target.Position;
-                    Vector3 endPos = unit.Position;
-                    endPos = startPos + (endPos - startPos).Normalized() * 900;
-                    var zone = new Geometry.Polygon.Rectangle(startPos, endPos, target.BoundingRadius-5);
-
-                    foreach(var unit2 in HeroManager.Enemies)
+                    var pred = Prediction.GetPrediction(unit, 500);
+                    if (target.Position.Distance(pred.UnitPosition) < 1100)
                     {
-                        if (unit2.NetworkId != target.NetworkId && unit2.NetworkId != unit.NetworkId && unit2.IsValidTarget())
+                        Vector3 startPos = target.Position;
+                        Vector3 endPos = pred.UnitPosition;
+                        endPos = startPos + (endPos - startPos).Normalized() * 900;
+                        var zone = new Geometry.Polygon.Rectangle(startPos, endPos, target.BoundingRadius - 5);
+
+                        foreach (var unit2 in HeroManager.Enemies)
                         {
-                            if(zone.IsInside(unit2))
+                            if (unit2.NetworkId != target.NetworkId && unit2.NetworkId != unit.NetworkId && unit2.IsValidTarget())
                             {
-                                unitHit++;
-                                if(unitHit > maxHit)
+                                pred = Prediction.GetPrediction(unit2, 500);
+                                if (zone.IsInside(pred.UnitPosition))
                                 {
-                                    maxHit = unitHit;
-                                    bestPos = target.Position + (target.Position - unit2.Position).Normalized() * 250;
-                                    result.pos = bestPos;
-                                    result.hit = maxHit;
+                                    unitHit++;
+                                    if (unitHit > maxHit)
+                                    {
+                                        maxHit = unitHit;
+                                        bestPos = target.Position + (target.Position - unit2.Position).Normalized() * 250;
+                                        result.pos = bestPos;
+                                        result.hit = maxHit;
+                                    }
                                 }
                             }
                         }
-                    }
-                    if(maxHit == 1)
-                    {
-                        maxHit = 2;
-                        bestPos = target.Position + (target.Position - unit.Position).Normalized() * 250;
-                        result.pos = bestPos;
-                        result.hit = maxHit;
+                        if (maxHit == 1)
+                        {
+                            maxHit = 2;
+                            bestPos = target.Position + (target.Position - unit.Position).Normalized() * 250;
+                            result.pos = bestPos;
+                            result.hit = maxHit;
+                        }
                     }
                 }
             }
