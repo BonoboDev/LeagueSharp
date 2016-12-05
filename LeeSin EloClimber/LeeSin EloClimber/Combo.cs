@@ -59,7 +59,7 @@ namespace LeeSin_EloClimber
 
         private static void launchCombo(Obj_AI_Hero unit)
         {
-            if (unit != null & unit.IsValidTarget(LeeSin.Q.Range + LeeSin.W.Range))
+            if (unit != null & unit.IsValidTarget(LeeSin.Q.Range + LeeSin.W.Range) && unit.IsEnemy && unit.IsChampion())
             {
                 if (MenuManager.myMenu.Item("combo.useQ").GetValue<Boolean>())
                 {
@@ -121,9 +121,18 @@ namespace LeeSin_EloClimber
         {
             if (LeeSin.Q.IsReady() && !LeeSin.IsSecondCast(LeeSin.Q))
             {
-                PredictionOutput qPred = LeeSin.Q.GetPrediction(target);
-                if ((int)qPred.Hitchance >= MenuManager.myMenu.Item("combo.qHitChance").GetValue<Slider>().Value)
-                    LeeSin.Q.Cast(qPred.CastPosition);
+                if (MenuManager.myMenu.Item("pred.list2").GetValue<StringList>().SelectedIndex == 0)
+                {
+                    PredictionOutput qPred = LeeSin.Q.GetPrediction(target);
+                    if ((int)qPred.Hitchance >= MenuManager.myMenu.Item("combo.qHitChance").GetValue<Slider>().Value)
+                        LeeSin.Q.Cast(qPred.CastPosition);
+                }
+                else
+                {
+                    resultPred qPred = myPred.GetPrediction(Target, LeeSin.Q);
+                    if (qPred.Hitchance >= MenuManager.myMenu.Item("combo.qHitChance").GetValue<Slider>().Value)
+                        LeeSin.Q.Cast(qPred.predPos);
+                }
             }
             else if (LeeSin.Q.IsReady() && LeeSin.IsSecondCast(LeeSin.Q) && target.HasBuff("BlindMonkQOne"))
             {

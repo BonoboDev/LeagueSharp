@@ -152,10 +152,25 @@ namespace LeeSin_EloClimber
 
             if (LeeSin.Q.IsReady() && !LeeSin.IsSecondCast(LeeSin.Q) && LeeSin.W.IsReady() && !LeeSin.IsSecondCast(LeeSin.W) && wardSpell != null)
             {
-                PredictionOutput qPred = LeeSin.Q.GetPrediction(insecTarget);
-                if ((int)qPred.Hitchance >= MenuManager.myMenu.Item("insec.qHitChance").GetValue<Slider>().Value)
+                int HitChance = 0;
+                Vector3 pos = new Vector3();
+
+                if (MenuManager.myMenu.Item("pred.list2").GetValue<StringList>().SelectedIndex == 0)
                 {
-                    LeeSin.Q.Cast(qPred.CastPosition);
+                    PredictionOutput pred = LeeSin.Q.GetPrediction(insecTarget);
+                    HitChance = (int)pred.Hitchance;
+                    pos = pred.CastPosition;
+                }
+                else
+                {
+                    resultPred pred = myPred.GetPrediction(insecTarget, LeeSin.Q);
+                    HitChance = pred.Hitchance;
+                    pos = pred.predPos;
+                }
+
+                if (HitChance >= MenuManager.myMenu.Item("insec.qHitChance").GetValue<Slider>().Value)
+                {
+                    LeeSin.Q.Cast(pos);
                     return;
                 }
                 else
@@ -164,21 +179,25 @@ namespace LeeSin_EloClimber
                     var isMinion = enemyMinion.Where(unit => unit.Position.Distance(WardPos) < 500 && unit.Health > LeeSin.GetDamage_Q1(unit));
                     if(isMinion.Count() > 0)
                     {
-                        qPred = LeeSin.Q.GetPrediction(isMinion.First());
-                        if ((int)qPred.Hitchance >= MenuManager.myMenu.Item("insec.qHitChance").GetValue<Slider>().Value)
-                        {
+                        PredictionOutput qPred = LeeSin.Q.GetPrediction(isMinion.First());
+                        if ((int)qPred.Hitchance >= MenuManager.myMenu.Item("combo.qHitChance").GetValue<Slider>().Value)
                             LeeSin.Q.Cast(qPred.CastPosition);
-                            return;
-                        }
                     }
+
                     var secondUnit = HeroManager.Enemies.Where(unit => unit.Position.Distance(WardPos) < 500);
                     if (secondUnit.Count() > 0)
                     {
-                        qPred = LeeSin.Q.GetPrediction(secondUnit.First());
-                        if ((int)qPred.Hitchance >= MenuManager.myMenu.Item("insec.qHitChance").GetValue<Slider>().Value)
+                        if (MenuManager.myMenu.Item("pred.list2").GetValue<StringList>().SelectedIndex == 0)
                         {
-                            LeeSin.Q.Cast(qPred.CastPosition);
-                            return;
+                            PredictionOutput qPred = LeeSin.Q.GetPrediction(secondUnit.First());
+                            if ((int)qPred.Hitchance >= MenuManager.myMenu.Item("combo.qHitChance").GetValue<Slider>().Value)
+                                LeeSin.Q.Cast(qPred.CastPosition);
+                        }
+                        else
+                        {
+                            resultPred qPred = myPred.GetPrediction(secondUnit.First(), LeeSin.Q);
+                            if (qPred.Hitchance >= MenuManager.myMenu.Item("combo.qHitChance").GetValue<Slider>().Value)
+                                LeeSin.Q.Cast(qPred.predPos);
                         }
                     }
                 }

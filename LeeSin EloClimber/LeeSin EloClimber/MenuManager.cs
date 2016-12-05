@@ -27,7 +27,7 @@ namespace LeeSin_EloClimber
 
             myMenu.AddSubMenu(new Menu("Insec Settings", "Insec"));
                 myMenu.SubMenu("Insec").AddItem(new MenuItem("insec.key", "Insec Key").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press, false)));
-                myMenu.SubMenu("Combo").AddItem(new MenuItem("insec.qHitChance", "(Q) Hit Chance").SetValue(new Slider(3, 3, 6)));
+                myMenu.SubMenu("Insec").AddItem(new MenuItem("insec.qHitChance", "(Q) Hit Chance").SetValue(new Slider(3, 3, 6)));
 
             myMenu.AddSubMenu(new Menu("Ward Jump Settings", "WardJump"));
                 myMenu.SubMenu("WardJump").AddItem(new MenuItem("wardjump.key", "Ward Jump Key").SetValue(new KeyBind("S".ToCharArray()[0], KeyBindType.Press, false)));
@@ -60,6 +60,10 @@ namespace LeeSin_EloClimber
                 myMenu.SubMenu("Drawing").AddItem(new MenuItem("smite.State", "Draw Auto Smite State").SetValue(true));
                 myMenu.SubMenu("Drawing").AddItem(new MenuItem("insec.WardPos", "Draw Insec Ward Position").SetValue(true));
                 myMenu.SubMenu("Drawing").AddItem(new MenuItem("insec.PredictPos", "Draw Insec Unit Prediction Position").SetValue(true));
+
+
+            myMenu.AddSubMenu(new Menu("Prediction Settings", "Pred"));
+            myMenu.SubMenu("Pred").AddItem(new MenuItem("pred.list2", "Choose Prediction").SetValue(new StringList(new[] { "Common Pred", "Own Pred"}, 1)));
 
             myMenu.AddSubMenu(new Menu("Orbwalker", "Orbwalker"));
                 LeeSin.Orbwalker = new Orbwalking.Orbwalker(myMenu.SubMenu("Orbwalker"));
